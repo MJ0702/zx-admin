@@ -12,7 +12,7 @@
           <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
          <el-form-item prop="password">
-          <el-input v-model="ruleForm.password"></el-input>
+          <el-input type="password" v-model="ruleForm.password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -47,11 +47,27 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      let model = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // alert('submit!');
-
-          this.$router.push('/home/first');
+          this.$http.post('/zxiao/API/Operator/login',{
+            params: {
+              code: model.ruleForm.name,
+              pwd:  model.ruleForm.password
+            }
+          }).then(function (response) {
+            console.log(response);
+            let json = response.data;
+            if(json.code == '-1'){
+              model.$message.error('账号不存在');
+            }else{
+              model.$router.push('/home/first');
+            } 
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         } else {
           console.log('error submit!!');
           return false;

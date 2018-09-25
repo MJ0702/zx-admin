@@ -8,16 +8,21 @@ import 'element-ui/lib/theme-chalk/index.css'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
+import store from './store/store'
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.HOST = 'zxiao'
 Vue.prototype.$http = axios
-
+//去除内容标签
+Vue.prototype.matchReg= function (msg) {  
+  let reg=/<\/?.+?\/?>/g;
+  return msg.replace(reg,'');
+};
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router,store,
   components: { App },
   template: '<App/>'
 })

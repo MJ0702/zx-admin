@@ -18,10 +18,10 @@
                 <i class="el-icon-location"></i>
                 <span>导航一</span>
               </el-menu-item>
-              <el-menu-item index="2">
+              <!--<el-menu-item index="2">
                 <i class="el-icon-menu"></i>
                 <span slot="title">导航二</span>
-              </el-menu-item>
+              </el-menu-item>-->
               <!-- <el-menu-item index="3">
                 <i class="el-icon-document"></i>
                 <span slot="title">导航三</span>
@@ -35,7 +35,20 @@
         </el-row>
       </el-aside>
       <el-container>
-        <el-header></el-header>
+        <el-header>
+          <el-row class="block-col-2">
+            <el-col>
+              <el-dropdown size="medium">
+                <span class="el-dropdown-link">
+                  Administor<i class="el-icon-caret-bottom el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </el-col>
+          </el-row>
+        </el-header>
         <el-main>
           <router-view></router-view>
         </el-main>
@@ -86,6 +99,16 @@ export default {
   .el-header{
     height: 68px;
     border:1px solid #ddd;
+    padding:0;
+    box-shadow:0 1px 1px rgba(0,0,0,.08);
+    box-sizing: border-box;
+    .block-col-2{
+      margin-top:22px;
+      text-align:right;
+      .el-dropdown{
+        margin-right:50px;
+      }
+    }
   }
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
   <div class="second">
+    <el-row>
+      <el-button type="primary" icon="el-icon-edit" size="medium" round @click="add">添加</el-button>
+      <el-button type="danger" size="medium" icon="el-icon-delete" round>删除</el-button>
+    </el-row>
     <el-table
     :data="tableData"
     style="width: 100%">
@@ -58,23 +62,47 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 编辑窗口 -->
-    <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="35%">
-      <el-form :model="form">
+    <!-- 添加窗口-->
+    <el-dialog title="添加" :visible.sync="dialogFormAddVisible" width="35%">
+      <el-form :model="formAdd">
         <el-form-item label="类别" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域" style="width:350px;">
+          <el-select v-model="formAdd.region" placeholder="请选择活动区域" style="width:350px;">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" style="width:350px;"></el-input>
+          <el-input v-model="formAdd.name" autocomplete="off" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item label="发布时间" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" style="width:350px;"></el-input>
+          <el-input v-model="formAdd.date" autocomplete="off" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item label="发布源" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" style="width:350px;"></el-input>
+          <el-input v-model="formAdd.source" autocomplete="off" style="width:350px;"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormAddVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormAddVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑窗口 -->
+    <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="35%">
+      <el-form :model="formEdit">
+        <el-form-item label="类别" :label-width="formLabelWidth">
+          <el-select v-model="formEdit.region" placeholder="请选择活动区域" style="width:350px;">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="标题" :label-width="formLabelWidth">
+          <el-input v-model="formEdit.name" autocomplete="off" style="width:350px;"></el-input>
+        </el-form-item>
+        <el-form-item label="发布时间" :label-width="formLabelWidth">
+          <el-input v-model="formEdit.date" autocomplete="off" style="width:350px;"></el-input>
+        </el-form-item>
+        <el-form-item label="发布源" :label-width="formLabelWidth">
+          <el-input v-model="formEdit.source" autocomplete="off" style="width:350px;"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -111,7 +139,18 @@ export default {
         }],
         //编辑窗口
         dialogFormVisible: false,
-        form: {
+        dialogFormAddVisible:false,
+        formEdit: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
+        },
+        formAdd: {
           name: '',
           region: '',
           date1: '',
@@ -125,6 +164,10 @@ export default {
     }
   },
   methods: {
+    //表格添加
+    add(){
+      this.dialogFormAddVisible = true;
+    },
     //表格编辑
     handleEdit(index, row) {
       console.log(index, row);
@@ -155,7 +198,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-// .second{
-//   height: 100%;
-// }
+.second{
+  .el-row{
+    margin-bottom:20px;
+  }
+}
 </style>

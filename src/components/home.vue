@@ -38,9 +38,9 @@
         <el-header>
           <el-row class="block-col-2">
             <el-col>
-              <el-dropdown size="medium">
+              <el-dropdown size="medium" @command="handleCommand">
                 <span class="el-dropdown-link">
-                  Administor<i class="el-icon-caret-bottom el-icon--right"></i>
+                  Admin<i class="el-icon-caret-bottom el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>退出登录</el-dropdown-item>
@@ -79,6 +79,10 @@ export default {
       }else if(key == 2){
         this.$router.push('/home/second')
       }
+    },
+    handleCommand(command) {
+      // console.log('退出');
+      this.$router.push('/login')
     }
   }
 }

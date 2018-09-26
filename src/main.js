@@ -9,11 +9,13 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
 import store from './store/store'
+import qs from 'qs'
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.prototype.HOST = 'zxiao'
 Vue.prototype.$http = axios
+Vue.prototype.$qs = qs
 //去除内容标签
 Vue.prototype.matchReg= function (msg) {  
   let reg=/<\/?.+?\/?>/g;

@@ -12,7 +12,7 @@
           <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
          <el-form-item prop="password">
-          <el-input type="password" v-model="ruleForm.password"></el-input>
+          <el-input type="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
@@ -30,9 +30,10 @@ export default {
     return {
       labelPosition: 'right',
       ruleForm: {
-        name: '',
-        password: ''
+        name: '',   //用户名
+        password: ''  //密码
       },
+      //校验
       rules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -51,21 +52,23 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // alert('submit!');
-          this.$http.post('/zxiao/API/Operator/login',{
-            params: {
+          let postData = this.$qs.stringify({
               code: model.ruleForm.name,
               pwd:  model.ruleForm.password
-            }
-          }).then(function (response) {
-            console.log(response);
-            let json = response.data;
+          });
+          this.$http({
+              method: 'post',
+              url:'/zxiao/API/Operator/login',
+              data:postData
+          }).then((res)=>{
+            console.log(res);
+            let json = res.data;
             if(json.code == '-1'){
               model.$message.error('账号不存在');
             }else{
               model.$router.push('/home/first');
             } 
-          })
-          .catch(function (error) {
+          }).catch(function (error) {
             console.log(error);
           });
         } else {

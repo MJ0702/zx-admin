@@ -83,7 +83,7 @@
         <el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="formAdd.type" placeholder="请选择活动区域" style="width:350px;">
             <el-option label="政策动态" value="政策动态"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option label="公告信息" value="公告信息"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth">
@@ -115,7 +115,7 @@
         <el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="formEdit.type" placeholder="请选择活动区域" style="width:350px;">
             <el-option label="政策动态" value="政策动态"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option label="公告信息" value="公告信息"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth">

@@ -69,6 +69,7 @@ export default {
               model.$router.push('/home/first');
             } 
           }).catch(function (error) {
+            model.$message.error('网络异常,登录失败！');
             console.log(error);
           });
         } else {
@@ -98,6 +99,7 @@ export default {
       width:100%;
       height:100%;
       opacity: 0.9;
+      display:block;
     }
   }
   #login_box{

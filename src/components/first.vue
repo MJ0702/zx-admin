@@ -79,7 +79,7 @@
     </div>
     <!-- 添加窗口-->
     <el-dialog title="添加" :visible.sync="dialogFormAddVisible" width="35%">
-      <el-form :model="formAdd">
+      <el-form :model="formAdd" :rules="rules" ref="formAdd" class="demo-formAdd">
         <el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="formAdd.type" placeholder="请选择活动区域" style="width:350px;">
             <el-option label="政策动态" value="政策动态"></el-option>
@@ -183,6 +183,17 @@ export default {
           source: '',
           content: ''
         },
+        //校验
+        rules: {
+          content: [
+            { required: true, message: '请输入内容', trigger: 'blur' },
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+          source: [
+            { required: true, message: '请输来源', trigger: 'blur' },
+            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ]
+        },
         formLabelWidth: '120px',
         currentPage: 1, //当前页
         pageSize:10,     //每页设置数量
@@ -195,6 +206,14 @@ export default {
     //表格添加
     add(){
       this.dialogFormAddVisible = true
+      let postData = this.$qs.stringify({
+          type:this.formAdd.type,
+          title:this.formAdd.title,
+          publish_time:this.formAdd.publish_time,
+          source:this.formAdd.source,
+          content:this.formAdd.content     
+      });
+      // this.add_edit_list(add,postData);
     },
     //表格编辑
     handleEdit(index, row) {
@@ -204,7 +223,15 @@ export default {
       this.formEdit.title = row.title;
       this.formEdit.publish_time = row.publish_time;
       this.formEdit.source = row.source;
-      this.formEdit.content = this.dislodge_tag(row.content);     
+      this.formEdit.content = this.dislodge_tag(row.content);    
+      let postData = this.$qs.stringify({
+          type:this.formEdit.type,
+          title:this.formEdit.title,
+          publish_time:this.formEdit.publish_time,
+          source:this.formEdit.source,
+          content:this.formEdit.content     
+      }); 
+      // this.add_edit_list(edit,postData);
     },
     //表格删除记录
     handleDelete(index, row) {
@@ -263,10 +290,30 @@ export default {
         console.log(error);
       });
     },
+    //去掉标签
     dislodge_tag(val){
       let reg=/<\/?.+?\/?>/g;
       return val.replace(reg,'');
-    }
+    },
+    //添加、修改表格数据
+    add_edit_list(type,postData){
+      this.$http({
+          method: 'post',
+          url:'/zxiao/API/Operator',
+          data:postData
+      }).then((res)=>{
+        console.log(res);
+        let json = res.data;
+        // if(json.code == '-1'){
+        //   model.$message.error('账号不存在');
+        // }else{
+        //   model.$router.push('/home/first');
+        // } 
+      }).catch(function (error) {
+        model.$message.error('添加失败！');
+        console.log(error);
+      });
+    },
   },
   computed:{
     ...mapState([

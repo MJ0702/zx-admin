@@ -1,7 +1,7 @@
 <template>
   <div class="first">
     <el-row>
-      <el-button type="primary" icon="el-icon-edit" size="medium" round @click="add">添加</el-button>
+      <el-button type="primary" icon="el-icon-edit" size="medium" round @click="dialogFormAddVisible = true">添加</el-button>
       <!--<el-button type="danger" size="medium" icon="el-icon-delete" round>删除</el-button>-->
     </el-row>
     <el-table
@@ -78,7 +78,7 @@
       </el-pagination>
     </div>
     <!-- 添加窗口-->
-    <el-dialog title="添加" :visible.sync="dialogFormAddVisible" width="35%">
+    <el-dialog title="添加" :visible.sync="dialogFormAddVisible" width="30%">
       <el-form :model="formAdd" :rules="rules" ref="formAdd" class="demo-formAdd">
         <el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="formAdd.type" placeholder="请选择活动区域" style="width:350px;">
@@ -90,7 +90,12 @@
           <el-input v-model="formAdd.title" autocomplete="off" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item label="发布时间" :label-width="formLabelWidth">
-          <el-input v-model="formAdd.publish_time" autocomplete="off" style="width:350px;"></el-input>
+          <el-date-picker
+            v-model="formAdd.publish_time"
+            type="date"
+            placeholder="选择日期"
+            style="width:350px;">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="发布源" :label-width="formLabelWidth">
           <el-input v-model="formAdd.source" autocomplete="off" style="width:350px;"></el-input>
@@ -106,11 +111,11 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormAddVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormAddVisible = false">确 定</el-button>
+        <el-button type="primary" @click="add_confirm">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 编辑窗口 -->
-    <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="35%">
+    <el-dialog title="编辑" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="formEdit">
         <el-form-item label="类别" :label-width="formLabelWidth">
           <el-select v-model="formEdit.type" placeholder="请选择活动区域" style="width:350px;">
@@ -122,7 +127,12 @@
           <el-input v-model="formEdit.title" autocomplete="off" style="width:350px;"></el-input>
         </el-form-item>
         <el-form-item label="发布时间" :label-width="formLabelWidth">
-          <el-input v-model="formEdit.publish_time" autocomplete="off" style="width:350px;"></el-input>
+          <el-date-picker
+            v-model="formEdit.publish_time"
+            type="date"
+            placeholder="选择日期"
+            style="width:350px;">
+          </el-date-picker>
         </el-form-item>
         <el-form-item label="发布源" :label-width="formLabelWidth">
           <el-input v-model="formEdit.source" autocomplete="off" style="width:350px;"></el-input>
@@ -138,7 +148,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="edit_confirm">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 删除提示 -->
@@ -150,13 +160,13 @@ import { mapState } from 'vuex'
 export default {
   name: 'first',
   created() {
-    console.log(this);
+    // console.log(this);
     this.$nextTick(() => {
       let model = this;
       // 配置当前页的路由
       // this.$router.push({ path: 'home/first', query: { page: 1}})
       //请求分页总数据
-      this.$store.commit('change_page_list', {page:1,rows:10});
+      // this.$store.commit('change_page_list', {page:1,rows:10});
       this.chage_page(1,10);
     })
   },
@@ -164,74 +174,58 @@ export default {
     return {
       //表格数据
       tableData: [],
-        //编辑窗口
-        dialogFormVisible: false,
-        dialogFormAddVisible :false,
-        formEdit: {
-          title: '',
-          type: '',
-          publish_time: '',
-          // delivery: false,
-          source: '',
-          content: ''
-        },
-        formAdd: {
-          title: '',
-          type: '',
-          publish_time: '',
-          // delivery: false,
-          source: '',
-          content: ''
-        },
-        //校验
-        rules: {
-          content: [
-            { required: true, message: '请输入内容', trigger: 'blur' },
-            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ],
-          source: [
-            { required: true, message: '请输来源', trigger: 'blur' },
-            // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ]
-        },
-        formLabelWidth: '120px',
-        currentPage: 1, //当前页
-        pageSize:10,     //每页设置数量
-        listNum:10,      //分页总条数
-        publish_time:new Date(),  //发布时间
-        fullscreenLoading: false  //加载中
+      //编辑窗口
+      dialogFormVisible: false,
+      dialogFormAddVisible :false,
+      formEdit: {
+        id:'',
+        title: '',
+        type: '',
+        publish_time: '',
+        // delivery: false,
+        source: '',
+        content: ''
+      },
+      formAdd: {
+        title: '',
+        type: '',
+        publish_time: '',
+        // delivery: false,
+        source: '',
+        content: ''
+      },
+      //校验
+      rules: {
+        content: [
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        source: [
+          { required: true, message: '请输来源', trigger: 'blur' },
+          // { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ]
+      },
+      formLabelWidth: '120px',
+      currentPage: 1, //当前页
+      pageSize:10,     //每页设置数量
+      listNum:10,      //分页总条数
+      publish_time:new Date(),  //发布时间
+      fullscreenLoading: false  //加载中
     }
   },
   methods: {
-    //表格添加
-    add(){
-      this.dialogFormAddVisible = true
-      let postData = this.$qs.stringify({
-          type:this.formAdd.type,
-          title:this.formAdd.title,
-          publish_time:this.formAdd.publish_time,
-          source:this.formAdd.source,
-          content:this.formAdd.content     
-      });
-      // this.add_edit_list(add,postData);
-    },
-    //表格编辑
+    //打开编辑窗口
     handleEdit(index, row) {
-      console.log(index, row);
+      // console.log(index, row);
       this.dialogFormVisible = true;
       this.formEdit.type = row.type;
       this.formEdit.title = row.title;
       this.formEdit.publish_time = row.publish_time;
       this.formEdit.source = row.source;
-      this.formEdit.content = this.dislodge_tag(row.content);    
-      let postData = this.$qs.stringify({
-          type:this.formEdit.type,
-          title:this.formEdit.title,
-          publish_time:this.formEdit.publish_time,
-          source:this.formEdit.source,
-          content:this.formEdit.content     
-      }); 
+      this.formEdit.content = this.dislodge_tag(row.content);
       // this.add_edit_list(edit,postData);
+      // console.log(row);
+      this.formEdit.id = row.id;
     },
     //表格删除记录
     handleDelete(index, row) {
@@ -296,7 +290,7 @@ export default {
       return val.replace(reg,'');
     },
     //添加、修改表格数据
-    add_edit_list(type,postData){
+    add_edit_list(postData){
       this.$http({
           method: 'post',
           url:'/zxiao/API/Operator',
@@ -314,6 +308,31 @@ export default {
         console.log(error);
       });
     },
+    //确认添加
+    add_confirm(){
+      this.dialogFormAddVisible = false
+      let postData = this.$qs.stringify({
+          type:this.formAdd.type,
+          title:this.formAdd.title,
+          publish_time:this.formAdd.publish_time,
+          source:this.formAdd.source,
+          content:this.formAdd.content     
+      });
+      add_edit_list(postData);
+    },
+    //确认编辑
+    edit_confirm(){
+      this.dialogFormAddVisible = false
+      let postData = this.$qs.stringify({
+          id:this.this.formEdit.id,
+          type:this.formEdit.type,
+          title:this.formEdit.title,
+          publish_time:this.formEdit.publish_time,
+          source:this.formEdit.source,
+          content:this.formEdit.content     
+      }); 
+      add_edit_list(postData);
+    }
   },
   computed:{
     ...mapState([
